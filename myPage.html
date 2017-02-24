@@ -12,15 +12,52 @@
      <script src="https://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
      <script src="https://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
      <style type="text/css">
-
+     .c-1{
+      width: 1024px;
+      height: 768px;
+      border: 1px solid #ccc;
+      text-align: center;margin: 0 auto;
+     }
+     .c-11{
+      width: 1000px;
+      height: 150px;
+      border: 1px solid #ccc;
+      top: 10px;
+      position: relative;
+      left: 10px;
+     }
+     #editor {
+      /*box-shadow: rgba(0, 0, 0, 0.498039) 10px 10px 10px;*/
+      position: absolute;
+      width: 580px;
+      height:585px;
+     }   
      </style>
   </head>
   
   <body>
-    <div class="c-1" style="width: 1024px;height: 768px;border: 1px solid #ccc;text-align: center;margin: 0 auto;">
-      <div style="width: 1000px;height: 150px;border: 1px solid #ccc;top: 10px;position: relative;left: 10px;"></div>
-      <div style="width: 700px;height: 585px;border: 1px solid #ccc;margin-top: 20px;position: relative;left: 10px;float: left;"></div>
-      <div style="width: 290px;height: 585px;border: 0px solid #ccc;margin-top: 20px;position: relative;right: 10px;float: right;">
+    <div class="c-1">
+      <div class="c-11"></div>
+      <div class="c-12" style="width: 700px;height: 585px;border: 1px solid #ccc;margin-top: 20px;position: relative;left: 10px;float: left;">
+        <pre id="editor">
+//示例代码
+function foo(items) {
+    var i;
+    for (i = 0; i &lt; items.length; i++) {
+        alert("Ace Rocks " + items[i]);
+    }
+}
+//部分常用的API方法
+//设置主题
+editor.setTheme("ace/theme/xcode");
+//设置语言模式
+editor.session.setMode("ace/mode/javascript");
+//设置编辑器字体大小
+document.getElementById('editor').style.fontSize='16px';
+        </pre>
+      </div>
+
+      <div class="c-13" style="width: 290px;height: 585px;border: 0px solid #ccc;margin-top: 20px;position: relative;right: 10px;float: right;">
           <div style="width: 280px;height: auto;border: 0px solid #ccc;text-align: left;max-height: 444px;overflow: auto;">
             <table class="table table-hover">
               <caption>备忘录</caption>
@@ -37,84 +74,123 @@
       </div>
     </div>
   </body>
+  <script src="src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
   <script type="text/javascript">
-    var reminderDataParse = function(){
+    // 备忘录
+    var remainder =function(){
+      //私有变量
       var storage=window.localStorage;
-      var flag = true;
-      var i = 1;
-      while(flag){
-        var dataItem = storage.getItem("remainder"+i);
-        if(typeof(dataItem) == "undefined" || dataItem == null || dataItem == ""){
-          flag = false;
-          return;
-        };
-        $("tbody").append("<tr class='remainder"+i+"'><td style='width:250px;'>"+i+", "+dataItem+"</td><td class='delBut ' style='cursor: pointer;'></td></tr>");
-        i++;
-      };
-    };
-    var bindReminderSaveBut = function(){
-      $(".remainderSave").click(function(){
-        var storage=window.localStorage;
+      //备忘录加载
+      var reminderDataParse = function(){
         var flag = true;
         var i = 1;
         while(flag){
           var dataItem = storage.getItem("remainder"+i);
           if(typeof(dataItem) == "undefined" || dataItem == null || dataItem == ""){
             flag = false;
+            return;
           };
+          $("tbody").append("<tr class='remainder"+i+"'><td style='width:250px;'>"+i+", "+dataItem+"</td><td class='delBut ' style='cursor: pointer;'></td></tr>"); 
           i++;
         };
-        var contentItem = $(".form-control").val();
-        $(".form-control").val("");
-        if(contentItem == ""){
-          console.info("输入为空");
-        }else{
-          var j = i-1;
-          storage.setItem("remainder"+j,contentItem);  
-          $("tbody").append("<tr class='remainder"+j+"'><td style='width:250px;'>"+j+", "+contentItem+"</td><td class='delBut ' style='cursor: pointer;'></td></tr>");  
-        };
-        
-      });
-    };
-    var bindReminderClearBut = function(){
-      $(".remainderClear").click(function(){
-        var storage=window.localStorage;
-        storage.clear();
-        $("tbody").empty();
-        $(".form-control").val("");
-      });
-    };
-    var bindReminderRewriteBut = function(){
-      $(".remainderRewrite").click(function(){
-        $(".form-control").val("");
-        $(".form-control").focus();
-      });
-    };
-    var bindReminderItemDelBut = function(){
-      $("body").delegate(".delBut","click",function(){
-        $(this).parent().hide();
-        var storage=window.localStorage;
-        storage.removeItem($(this).parent().attr("class"));
-      });
-    };
-    var bindReminderItemDelButShow = function(){
-      $("body").delegate("tr","mouseover",function(event){
-        // $(this).find(".delBut").show();
-        $(this).find(".delBut").html("x");
-      });
-      $("body").delegate("tr","mouseout",function(event){
-        $(this).find(".delBut").html("");
-      });
-    };
+      };
+      //保存备忘录
+      var bindReminderSaveBut = function(){
+        $(".remainderSave").click(function(){
+          var flag = true;
+          var i = 1;
+          while(flag){
+            var dataItem = storage.getItem("remainder"+i);
+            if(typeof(dataItem) == "undefined" || dataItem == null || dataItem == ""){
+              flag = false;
+            };
+            i++;
+          };
+          var contentItem = $(".form-control").val();
+          $(".form-control").val("");
+          if(contentItem == ""){
+            console.info("输入为空");
+          }else{
+            var j = i-1;
+            storage.setItem("remainder"+j,contentItem);  
+            $("tbody").append("<tr class='remainder"+j+"'><td style='width:250px;'>"+j+", "+contentItem+"</td><td class='delBut ' style='cursor: pointer;'></td></tr>");  
+          };
+          
+        });
+      };
+      //清除所有备忘录
+      var bindReminderClearBut = function(){
+        $(".remainderClear").click(function(){
+          storage.clear();
+          $("tbody").empty();
+          $(".form-control").val("");
+        });
+      };
+      //重新输入
+      var bindReminderRewriteBut = function(){
+        $(".remainderRewrite").click(function(){
+          $(".form-control").val("");
+          $(".form-control").focus();
+        });
+      };
+      //删除
+      var bindReminderItemDelBut = function(){
+        $("body").delegate(".delBut","click",function(){
+          $(this).parent().hide();
+          storage.removeItem($(this).parent().attr("class"));
+        });
+      };
+      //显示删除按钮
+      var bindReminderItemDelButShow = function(){
+        $("body").delegate("tr","mouseover",function(event){
+          $(this).find(".delBut").html("x");
+        });
+        $("body").delegate("tr","mouseout",function(event){
+          $(this).find(".delBut").html("");
+        });
+      };
+      return {
+        init : function(){ 
+          reminderDataParse();
+          bindReminderSaveBut();
+          bindReminderClearBut();
+          bindReminderRewriteBut();
+          bindReminderItemDelBut();
+          bindReminderItemDelButShow();
+        }
+      }; 
+    }();
+
+    //编辑器
+    var codeEditor = function(){
+      var editroInit = function(){
+        var editor = ace.edit("editor");
+        //设置主题
+        editor.setTheme("ace/theme/monokai");
+        //设置语言模式
+        editor.session.setMode("ace/mode/javascript");
+        //设置编辑器字体大小
+        // document.getElementById('editor').style.fontSize='16px';
+
+        //editor.setShowPrintMargin(true);
+
+        editor.setOptions({
+            enableBasicAutocompletion: true,
+            enableSnippets: true,
+            enableLiveAutocompletion: true
+        });
+      };
+      return{
+        init : function(){
+          editroInit();
+        }
+      };
+    }();
+
+
     $(function(){
-      var storage=window.localStorage;
-      reminderDataParse();
-      bindReminderSaveBut();
-      bindReminderClearBut();
-      bindReminderRewriteBut();
-      //
-      bindReminderItemDelBut();
-      bindReminderItemDelButShow();
+      remainder.init();
+      codeEditor.init();
     });
   </script>
 </html>
